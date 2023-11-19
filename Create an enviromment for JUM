@@ -1,0 +1,15 @@
+#Create a new enviromnent for JUM 
+conda create -n jum
+conda activate jum 
+
+#Create a new folder for jum 
+cd /N/slate/by6
+mkdir jum
+
+#Download required softwares 
+conda install -c conda-forge samtools=1.3.1
+conda install -c conda-forge bedtools=2.26.0
+conda install -c conda-forge bioconda star
+
+#Check if all required softwares are installed 
+
