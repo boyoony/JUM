@@ -2,14 +2,35 @@
 conda create -n jum
 conda activate jum 
 
+
 #Create a new folder for jum 
 cd /N/slate/by6
 mkdir jum
 
+
 #Download required softwares 
-conda install -c conda-forge samtools=1.3.1
-conda install -c conda-forge bedtools=2.26.0
-conda install -c conda-forge bioconda star
+conda install -c bioconda samtools=1.3.1
+conda install -c bioconda bedtools=2.26.0
+conda install -c bioconda star
+
+
+#Install Perl with required modules -- Array::Utils and Statistics::Descriptive
+wget -O- http://cpanmin.us | perl - -l ~/perl5 App::cpanminus local::lib
+
+cpanm Array::Utils 
+cpanm Statistics::Descriptive
+
 
 #Check if all required softwares are installed 
+conda list 
+
+
+#Download JUM package from here (https://github.com/qqwang-berkeley/JUM/releases)
+#I downloaded JUM_3.0.0.tar.gz to desktop 
+#In Mac terminal 
+
+scp /Users/yang/Desktop/JUM_3.0.0.tar by6@carbonate.uits.iu.edu:/N/slate/by6/jum
+
+cd /N/slate/by6/jum
+tar -xf JUM_3.0.0.tar
 
