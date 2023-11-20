@@ -25,6 +25,14 @@ cpanm Statistics::Descriptive
 conda list 
 
 
+#Open R studio 4.2.1 (has to be 4.2.X or up)
+$ R
+> if (!require("BiocManager", quietly = TRUE))
+> install.packages("BiocManager")
+> BiocManager::install(version = "3.16")
+> BiocManager::install("DEXSeq")
+
+
 #Download JUM package from here (https://github.com/qqwang-berkeley/JUM/releases)
 #I downloaded JUM_3.0.0.tar.gz to desktop 
 #In Mac terminal 
