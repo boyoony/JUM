@@ -1,0 +1,107 @@
+# Copy and paste R1 and R2 read files to the folder 
+cd /N/slate/by6/GSF3524new
+scp GSF3524-396mixed-Rep1_S25_R1_001.fastq /N/slate/by6/jum
+scp GSF3524-396mixed-Rep2_S27_R1_001.fastq /N/slate/by6/jum
+scp GSF3524-396mixed-Rep3_S29_R1_001.fastq /N/slate/by6/jum
+scp GSF3524-6mixed-Rep1_S26_R1_001.fastq /N/slate/by6/jum 
+scp GSF3524-6mixed-Rep2_S28_R1_001.fastq /N/slate/by6/jum
+scp GSF3524-6mixed-Rep3_S30_R1_001.fastq /N/slate/by6/jum
+
+cd N/slate/by6/396RNAseq
+scp GSF3524-396mixed-Rep1_S25_R2_001.fastq /N/slate/by6/jum
+scp GSF3524-396mixed-Rep2_S27_R2_001.fastq /N/slate/by6/jum
+scp GSF3524-396mixed-Rep3_S29_R2_001.fastq /N/slate/by6/jum
+scp GSF3524-6mixed-Rep1_S26_R2_001.fastq /N/slate/by6/jum 
+scp GSF3524-6mixed-Rep2_S28_R2_001.fastq /N/slate/by6/jum
+scp GSF3524-6mixed-Rep3_S30_R2_001.fastq /N/slate/by6/jum
+
+cd /N/slate/by6/jum
+
+
+#Assign Variables
+ASSEMBLY='ftp://ftp.wormbase.org/pub/wormbase/releases/WS275/species/c_elegans/PRJNA13758/c_elegans.PRJNA13758.WS275.genomic.fa.gz'
+ANNOTATION='ftp://ftp.wormbase.org/pub/wormbase/releases/WS275/species/c_elegans/PRJNA13758/c_elegans.PRJNA13758.WS275.canonical_geneset.gtf.gz'
+
+
+# Generate STAR Genome Index 
+# Make a directory to store the genome files
+mkdir -p genome/index
+
+
+# Download and unpack the genome assembly.
+curl $ASSEMBLY | gunzip > ./genome/assembly.fasta
+
+
+# Download and unpack the genome annotation.
+curl $ANNOTATION | gunzip > ./genome/annotation.gtf
+
+
+# Create the STAR genome index
+
+STAR --runThreadN 3 --runMode genomeGenerate --genomeDir genome/index --genomeFastaFiles genome/assembly.fasta --sjdbGTFfile genome/annotation.gtf --sjdbOverhang 99
+
+
+# 1st pass mapping and copy selected STAR outputs from the 1st mapping to a folder named as 1st_SJ (Ctrl = 396, Treat = 6) 
+
+STAR --runThreadN 3 --genomeDir genome/index --outFileNamePrefix ctrl_1 --readFilesIn GSF3524-396mixed-Rep1_S25_R1_001.fastq GSF3524-396mixed-Rep1_S25_R2_001.fastq --outSJfilterReads Unique
+
+STAR --runThreadN 3 --genomeDir genome/index --outFileNamePrefix ctrl_2 --readFilesIn GSF3524-396mixed-Rep2_S27_R1_001.fastq GSF3524-396mixed-Rep2_S27_R2_001.fastq --outSJfilterReads Unique
+
+STAR --runThreadN 3 --genomeDir genome/index --outFileNamePrefix ctrl_3 --readFilesIn GSF3524-396mixed-Rep3_S29_R1_001.fastq GSF3524-396mixed-Rep3_S29_R2_001.fastq --outSJfilterReads Unique
+
+STAR --runThreadN 3 --genomeDir genome/index --outFileNamePrefix treat_1 --readFilesIn GSF3524-6mixed-Rep1_S26_R1_001.fastq GSF3524-6mixed-Rep1_S26_R2_001.fastq --outSJfilterReads Unique
+
+STAR --runThreadN 3 --genomeDir genome/index --outFileNamePrefix treat_2 --readFilesIn GSF3524-6mixed-Rep2_S28_R1_001.fastq GSF3524-6mixed-Rep2_S28_R2_001.fastq --outSJfilterReads Unique
+
+STAR --runThreadN 3 --genomeDir genome/index --outFileNamePrefix treat_3 --readFilesIn GSF3524-6mixed-Rep3_S30_R1_001.fastq GSF3524-6mixed-Rep3_S30_R2_001.fastq --outSJfilterReads Unique
+
+mkdir 1st_SJ
+mv *SJ.out.tab 1st_SJ
+mv *Log.final.out 1st_SJ
+mv *Log.progress.out 1st_SJ
+mv *Log.out 1st_SJ
+rm *Aligned.out.sam
+
+
+# 2nd pass mapping 
+
+STAR --runThreadN 3 --genomeDir genome/index --outFileNamePrefix ctrl_1 --readFilesIn GSF3524-396mixed-Rep1_S25_R1_001.fastq GSF3524-396mixed-Rep1_S25_R2_001.fastq --outSJfilterReads Unique --outSAMstrandField intronMotif --outFilterMultimapNmax 1 -sjdbFileChrStartEnd 1st_SJ/ctrl_1SJ.out.tab 1st_SJ/ctrl_2SJ.out.tab 1st_SJ/ctrl_3SJ.out.tab 1st_SJ/treat_1SJ.out.tab 1st_SJ/treat_2SJ.out.tab 1st_SJ/treat_3SJ.out.tab
+
+STAR --runThreadN 3 --genomeDir genome/index --outFileNamePrefix ctrl_2 --readFilesIn GSF3524-396mixed-Rep2_S27_R1_001.fastq GSF3524-396mixed-Rep2_S27_R2_001.fastq --outSJfilterReads Unique --outSAMstrandField intronMotif --outFilterMultimapNmax 1 -sjdbFileChrStartEnd 1st_SJ/ctrl_1SJ.out.tab 1st_SJ/ctrl_2SJ.out.tab 1st_SJ/ctrl_3SJ.out.tab 1st_SJ/treat_1SJ.out.tab 1st_SJ/treat_2SJ.out.tab 1st_SJ/treat_3SJ.out.tab
+
+STAR --runThreadN 3 --genomeDir genome/index --outFileNamePrefix ctrl_3 --readFilesIn GSF3524-396mixed-Rep3_S29_R1_001.fastq GSF3524-396mixed-Rep3_S29_R2_001.fastq --outSJfilterReads Unique --outSAMstrandField intronMotif --outFilterMultimapNmax 1 -sjdbFileChrStartEnd 1st_SJ/ctrl_1SJ.out.tab 1st_SJ/ctrl_2SJ.out.tab 1st_SJ/ctrl_3SJ.out.tab 1st_SJ/treat_1SJ.out.tab 1st_SJ/treat_2SJ.out.tab 1st_SJ/treat_3SJ.out.tab
+
+STAR --runThreadN 3 --genomeDir genome/index --outFileNamePrefix treat_1 --readFilesIn --readFilesIn GSF3524-6mixed-Rep1_S26_R1_001.fastq GSF3524-6mixed-Rep1_S26_R2_001.fastq --outSJfilterReads Unique --outSAMstrandField intronMotif --outFilterMultimapNmax 1 -sjdbFileChrStartEnd 1st_SJ/ctrl_1SJ.out.tab 1st_SJ/ctrl_2SJ.out.tab 1st_SJ/ctrl_3SJ.out.tab 1st_SJ/treat_1SJ.out.tab 1st_SJ/treat_2SJ.out.tab 1st_SJ/treat_3SJ.out.tab
+
+STAR --runThreadN 3 --genomeDir genome/index --outFileNamePrefix treat_2 --readFilesIn GSF3524-6mixed-Rep2_S28_R1_001.fastq GSF3524-6mixed-Rep2_S28_R2_001.fastq --outSJfilterReads Unique --outSAMstrandField intronMotif --outFilterMultimapNmax 1 -sjdbFileChrStartEnd 1st_SJ/ctrl_1SJ.out.tab 1st_SJ/ctrl_2SJ.out.tab 1st_SJ/ctrl_3SJ.out.tab 1st_SJ/treat_1SJ.out.tab 1st_SJ/treat_2SJ.out.tab 1st_SJ/treat_3SJ.out.tab
+
+STAR --runThreadN 3 --genomeDir genome/index --outFileNamePrefix treat_3 --readFilesIn GSF3524-6mixed-Rep3_S30_R1_001.fastq GSF3524-6mixed-Rep3_S30_R2_001.fastq --outSJfilterReads Unique --outSAMstrandField intronMotif --outFilterMultimapNmax 1 -sjdbFileChrStartEnd 1st_SJ/ctrl_1SJ.out.tab 1st_SJ/ctrl_2SJ.out.tab 1st_SJ/ctrl_3SJ.out.tab 1st_SJ/treat_1SJ.out.tab 1st_SJ/treat_2SJ.out.tab 1st_SJ/treat_3SJ.out.tab
+
+
+# Convert and sort the resulted alignment files (please use the exact naming nomenclature as shown below). Here we show ctrl 1 sample as an example but users need to do this for all the samples:
+
+samtools view -bS ctrl1Aligned.out.sam > ctrl1Aligned.out.bam
+samtools sort -o ctrl1Aligned.out_sorted.bam -T ctrl1_temp ctrl1Aligned.out.bam 
+samtools index ctrl1Aligned.out_sorted.bam
+
+samtools view -bS ctrl2Aligned.out.sam > ctrl2Aligned.out.bam
+samtools sort -o ctrl2Aligned.out_sorted.bam -T ctrl2_temp ctrl2Aligned.out.bam 
+samtools index ctrl2Aligned.out_sorted.bam
+
+samtools view -bS ctrl3Aligned.out.sam > ctrl3Aligned.out.bam
+samtools sort -o ctrl3Aligned.out_sorted.bam -T ctrl3_temp ctrl3Aligned.out.bam 
+samtools index ctrl3Aligned.out_sorted.bam
+
+samtools view -bS treat1Aligned.out.sam > treat1Aligned.out.bam
+samtools sort -o treat1Aligned.out_sorted.bam -T treat1_temp treat1Aligned.out.bam 
+samtools index treat1Aligned.out_sorted.bam
+
+samtools view -bS treat2Aligned.out.sam > treat2Aligned.out.bam
+samtools sort -o treat2Aligned.out_sorted.bam -T treat2_temp treat1Aligned.out.bam 
+samtools index treat2Aligned.out_sorted.bam
+
+samtools view -bS treat3Aligned.out.sam > treat3Aligned.out.bam
+samtools sort -o treat3Aligned.out_sorted.bam -T treat3_temp treat1Aligned.out.bam 
+samtools index treat3Aligned.out_sorted.bam
+
+rm *Aligned.out.bam
