@@ -29,8 +29,8 @@ conda list
 #I downloaded JUM_3.0.0.tar.gz to desktop 
 #In Mac terminal 
 
-scp /Users/yang/Desktop/JUM_3.0.0.tar by6@carbonate.uits.iu.edu:/N/slate/by6/jum
+scp /Users/yang/Desktop/JUM_3.0.0.tar by6@carbonate.uits.iu.edu:/N/slate/by6
 
-cd /N/slate/by6/jum
+cd /N/slate/by6
 tar -xf JUM_3.0.0.tar
 
