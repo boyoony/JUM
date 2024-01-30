@@ -53,7 +53,7 @@ Rscript /N/slate/by6/JUM_3.0.0/R_script_JUM.R experiment_design.txt > outputFile
 # R_script_JUM.R will output a file called AS_differential.txt. Make sure that Step 2 successfully generates a new file called AS_differential.txt in the JUM_diff/ folder. Otherwise you can refer to the files outputFile.Rout and errorFile.Rout for troubleshooting  
 
 
-# Now run JUM_B.sh in the JUM_diff/ folder as follows:
+# Now run JUM_B.sh in the JUM_diff/ folder as follows: (It is advised to use p value curoff < 0.05. I used 1 for initial running)
 
 bash /N/slate/by6/JUM_3.0.0/JUM_B.sh --Folder /N/slate/by6/JUM_3.0.0 --Test pvalue --Cutoff 1 --TotalFileNum 6 --Condition1_fileNum_threshold 2 --Condition2_fileNum_threshold 2 --Condition1SampleName ctrl_1,ctrl_2,ctrl_3 --Condition2SampleName treat_1,treat_2,treat_3
 
@@ -63,4 +63,18 @@ bash /N/slate/by6/JUM_3.0.0/JUM_B.sh --Folder /N/slate/by6/JUM_3.0.0 --Test pval
 
 ##### Running JUM_C.sh #####
 
+# Before you start, make sure you generate annotation.gtf.refflat.txt file and put it in the JUM_diff/FINAL_JUM_OUTPUT_pvalue_1 folder
+# Run JUM_C.sh in the folder FINAL_JUM_OUTPUT_$Test_$Cutoff as follows:
+
+bash /N/slate/by6/JUM_3.0.0/JUM_C.sh --Folder /N/slate/by6/JUM_3.0.0 --Test pvalue --Cutoff 1 --TotalCondition1FileNum 3 --TotalCondition2FileNum 3 --REF annotation.gtf.refflat.txt
+
+# As soon as JUM_C.sh starts running, all output files from JUM_B.sh is overwritten by JUM_C.sh. If you face any error in this step, or wish to rerun JUM_C.sh, you will have to delete the output folder of JUM_B.sh, “FINAL_JUM_OUTPUT_pvalue_1” and start over from running JUM_B.sh. 
+# JUM_C.sh will output files with the suffix: *_final_simplified.txt and *_final_detailed.txt. These are the final output files from JUM.
+
+
+
+# After completion, copy and paste the output files to view results 
+
+# In Mac terminal, 
+scp by6@carbonate.uits.iu.edu:/N/slate/by6/AS_analysis/JUM_diff/FINAL_JUM_OUTPUT_pvalue_1/AS* ~/Desktop/
 
