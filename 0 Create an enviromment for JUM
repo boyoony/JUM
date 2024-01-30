@@ -12,6 +12,7 @@ mkdir jum
 conda install -c bioconda samtools=1.3.1
 conda install -c bioconda bedtools=2.26.0
 conda install -c bioconda star
+conda install -c bioconda r-base
 
 
 #Install Perl with required modules -- Array::Utils and Statistics::Descriptive
