@@ -42,3 +42,63 @@ scp /Users/yang/Desktop/JUM_3.0.0.tar by6@carbonate.uits.iu.edu:/N/slate/by6
 cd /N/slate/by6
 tar -xf JUM_3.0.0.tar
 
+
+#Now proceed to step 2
+##If any of the above steps fail, you will get an error message in JUM_B.sh. Then, come back here and try below##
+#1. Set Up Local::Lib:
+#First, make sure you have the `local::lib` module installed. If you don't have it installed, you can install it using the system-wide Perl package manager:
+
+bash
+
+#Install local::lib using cpanm (if you have it)
+
+cpanm local::lib
+
+
+#If you don't have `cpanm`, you can use the following:
+
+bash
+
+#Install local::lib using cpan (you might need administrative
+privileges)
+
+cpan local::lib
+
+
+#2. Configure Local::Lib:
+#Once you have `local::lib` installed, you need to configure itbin your shell profile (e.g., `.bashrc` or `.bash_profile`).
+
+bash
+
+#Add the following lines to your shell profile
+
+eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
+export PERL_MM_OPT="INSTALL_BASE=$HOME/perl5"
+
+
+#3. Reload Your Shell Profile:
+After adding the `local::lib` configuration to your shell profile, reload the profile to apply the changes:
+
+bash
+source ~/.bashrc —>>this worked 
+
+
+#4. Install Statistics::Descriptive:
+#Now, you can use `cpan` to install `Statistics::Descriptive` to your user-specific library:
+
+bash
+cpan Statistics::Descriptive
+
+#This will install the `Statistics::Descriptive` module to your `perl5` directory under your home directory.
+
+
+#5. Use the Installed Module in Perl:
+#Once the module is installed, you can use it in your Perl scripts:
+
+perl
+use lib "$ENV{HOME}/perl5/lib/perl5"; # Add the user-specific library to the Perl search path
+use Statistics::Descriptive; # Your Perl code using Statistics::Descriptive
+
+#By setting up `local::lib`, you can install and use Perl modules without requiring administrative access on the HPC system. The installed modules will be available only to your user account
+
+
