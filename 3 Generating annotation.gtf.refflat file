@@ -14,3 +14,11 @@ chmod a+x gtfToGenePred
 ./gtfToGenePred
 
 
+# Download and unpack genome annotation
+
+ANNOTATION='ftp://ftp.wormbase.org/pub/wormbase/releases/WS275/species/c_elegans/PRJNA13758/c_elegans.PRJNA13758.WS275.canonical_geneset.gtf.gz'
+
+curl $ANNOTATION | gunzip > annotation.gtf.refflat.txt
+
+
+###work in progress###
