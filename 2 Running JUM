@@ -63,7 +63,8 @@ bash /N/slate/by6/JUM_3.0.0/JUM_B.sh --Folder /N/slate/by6/JUM_3.0.0 --Test pval
 
 ##### Running JUM_C.sh #####
 
-# Before you start, make sure you generate annotation.gtf.refflat.txt file and put it in the JUM_diff/FINAL_JUM_OUTPUT_pvalue_1 folder
+# Before you start, make sure you download annotation_transcriptname.gtf.refflat.txt file on Onedrive (Boyoon Yang > Bioinformatics > JUM folder) and put it in the JUM_diff/FINAL_JUM_OUTPUT_pvalue_1 folder
+# Note that this refflat file has transcript name in both column 1 and 2. Ideally, column 1 should have gene names instead so this has to be fixed in the future (had errors when putting gene names in column 1)
 # Run JUM_C.sh in the folder FINAL_JUM_OUTPUT_$Test_$Cutoff as follows:
 
 bash /N/slate/by6/JUM_3.0.0/JUM_C.sh --Folder /N/slate/by6/JUM_3.0.0 --Test pvalue --Cutoff 1 --TotalCondition1FileNum 3 --TotalCondition2FileNum 3 --REF annotation.gtf.refflat.txt
