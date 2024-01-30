@@ -1,0 +1,16 @@
+# Download a program to convert gtf files into GenePred format 
+
+mkdir gtfToGenePred
+
+cd gtfToGenePred
+
+wget -c http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/gtfToGenePred
+
+
+# make executable permission to it
+
+chmod a+x gtfToGenePred
+
+./gtfToGenePred
+
+
