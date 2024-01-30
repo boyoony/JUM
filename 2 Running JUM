@@ -12,3 +12,55 @@
 bash /N/slate/by6/JUM_3.0.0/JUM_A.sh --Folder /N/slate/by6/JUM_3.0.0 --JuncThreshold 5 --Condition1_fileNum_threshold 2 --Condition2_fileNum_threshold 2 --IRthreshold 5 --Readlength 100 --Thread 3 --Condition1SampleName ctrl_1,ctrl_2,ctrl_3 --Condition2SampleName treat_1,treat_2,treat_3
 
 # JUM_A.sh will generate a new folder called JUM_diff/ with results for downstream analysis.
+
+
+
+##### Running JUM_B.sh #####
+
+# Make changes to the experiment design file before running Rscript 
+
+cd /N/slate/by6/JUM_3.0.0/
+
+vim experiment_design.txt 
+
+i
+
+      condition
+ctrl_1 control
+ctrl_2 control
+ctrl_3 control
+treat_1 treatment
+treat_2 treatment
+treat_3 treatment
+
+ESC + Shift + ZZ
+
+# The spaces should be all tab so that these are two different columns when opened in excel (I made an excel file myself to ensure this)
+
+# Copy and paste this file into JUM_diff folder 
+
+scp experiment_design.txt /N/slate/by6/jum/JUM_diff
+
+
+# Enter the JUM_diff/ folder and run the R script with a user-provided experiment design file
+
+cd JUM_diff/
+
+module load bioconductor 
+
+Rscript /N/slate/by6/JUM_3.0.0/R_script_JUM.R experiment_design.txt > outputFile.Rout 2> errorFile.Rout
+
+# R_script_JUM.R will output a file called AS_differential.txt. Make sure that Step 2 successfully generates a new file called AS_differential.txt in the JUM_diff/ folder. Otherwise you can refer to the files outputFile.Rout and errorFile.Rout for troubleshooting  
+
+
+# Now run JUM_B.sh in the JUM_diff/ folder as follows:
+
+bash /N/slate/by6/JUM_3.0.0/JUM_B.sh --Folder /N/slate/by6/JUM_3.0.0 --Test pvalue --Cutoff 1 --TotalFileNum 6 --Condition1_fileNum_threshold 2 --Condition2_fileNum_threshold 2 --Condition1SampleName ctrl_1,ctrl_2,ctrl_3 --Condition2SampleName treat_1,treat_2,treat_3
+
+# JUM_B.sh will generate a new folder called FINAL_JUM_OUTPUT_$Test_$Cutoff that contains the results for downstream analysis.
+
+
+
+##### Running JUM_C.sh #####
+
+
